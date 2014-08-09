@@ -42,10 +42,10 @@ $cakeDescription = __d('cake_dev', 'CakePHP: the rapid development php framework
 	<script src="js/google_analytics.js"></script>
 </head>
 <body>
+	<div id="head">
+		<h1 class="header_title"><?= $title_for_layout ?></h1>
+	</div>
 	<div id="container">
-		<div id="head">
-			<h1><?php echo $this->Html->link('Home','/incomes'); ?></h1>
-		</div>
 		<?php echo $this->element('menubar')?>
 		<?php echo $this->Session->flash(); ?>
 		<?php echo $this->fetch('content'); ?>

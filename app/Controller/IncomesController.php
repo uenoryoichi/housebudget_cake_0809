@@ -28,7 +28,7 @@ class IncomesController extends AppController
             }
         }else{
             $this->Session->setFlash('Fauled');
-            $this->redirect(array('index'));
+            $this->redirect('index');
         }
     }
 

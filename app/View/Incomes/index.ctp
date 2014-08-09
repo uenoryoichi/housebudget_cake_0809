@@ -3,18 +3,16 @@
     <div class="row"> 		    
         <div class="col-md-offset-3 col-md-6">
             <br><h2>収入情報入力フォーム</h2>
-            <?php  
-            echo $this->Form->create('Income',array('action'=>'add','class'=>'form-inline well'));
-            echo $this->Form->input('title',array('label'=>'名称'));
-            echo $this->Form->input('amount',array('label'=>'金額'));
-            echo $this->Form->input('date',array('class'=>'form-control-dateTime','label'=>'日時'));
-            echo $this->Form->input('memo',array('label'=>'メモ'));
-            echo $this->Form->input('user_account_id',array('label'=>'口座名','options' => h($user_account_option)));
-            echo $this->Form->input('income_specification_id',array('label'=>'分類','options' => h($income_specification_option)));
-            echo $this->Form->hidden('user_id',array('value'=> AuthComponent::user('id')));
-            ?>
+            <?= $this->Form->create('Income',array('action'=>'add','class'=>'form-inline well'))?>
+            <?= $this->Form->input('title',array('label'=>'名称'))?>
+            <?= $this->Form->input('amount',array('label'=>'金額'))?>
+            <?= $this->Form->input('date',array('class'=>'form-control-dateTime','label'=>'日時'))?>
+            <?= $this->Form->input('memo',array('label'=>'メモ'))?>
+            <?= $this->Form->input('user_account_id',array('label'=>'口座名','options' => h($user_account_option)))?>
+            <?= $this->Form->input('income_specification_id',array('label'=>'分類','options' => h($income_specification_option)))?>
+            <?= $this->Form->hidden('user_id',array('value'=> AuthComponent::user('id')))?>
             <div class='center'>
-            <?php echo $this->Form->end('Save Income'); ?>
+            <?= $this->Form->end('Save Income'); ?>
             </div>  
         </div>
     </div>
@@ -38,35 +36,31 @@
                             <th scope="col"></th>
                         </tr>   
                     </thead>
-                    <?php foreach ($incomes as $income):?>
+                    <? foreach ($incomes as $income) {?>
 
-                    <tbody>
-                        <tr>
-                            <td><?php echo h($income['Income']['title']);?></td>
-                            <td><?php echo h($income['Income']['date']);?></td>
-                            <td><?php echo h($income['Income']['amount']);?></td>
-                            <td><?php echo h($income['IncomeSpecification']['name']);?></td> 
-                            <td><?php echo h($income['UserAccount']['Account']['name']);?></td>
-                            <td><?php echo h($income['Income']['memo']);?></td>
-                            <td class="center">
-                            <?php  
-                                echo $this->Form->create('Income',array('action'=>'edit'));
-                                echo $this->Form->hidden('id',array('value'=>h($income['Income']['id'])));
-                                echo $this->Form->submit('編集',array('class'=>'btn btn-success btn-xs'));
-                                echo $this->Form->end();
-                            ?>
-                            </td>
-                            <td class="center">   
-                            <?php 
-                                echo $this->Form->create('Income',array('action'=>'delete'));
-                                echo $this->Form->hidden('id',array('value'=>h($income['Income']['id'])));
-                                echo $this->Form->submit('削除',array('class'=>'btn btn-danger btn-xs'),array('confirm'=>'削除してよろしいでしょうか？'));
-                                echo $this->Form->end();
-                            ?>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <?php endforeach;?>
+                        <tbody>
+                            <tr>
+                                <td><?= h($income['Income']['title']);?></td>
+                                <td><?= h($income['Income']['date']);?></td>
+                                <td><?= h($income['Income']['amount']);?></td>
+                                <td><?= h($income['IncomeSpecification']['name']);?></td> 
+                                <td><?= h($income['UserAccount']['Account']['name']);?></td>
+                                <td><?= h($income['Income']['memo']);?></td>
+                                <td class="center">
+                                    <?= $this->Form->create('Income',array('action'=>'edit'))?>
+                                    <?= $this->Form->hidden('id',array('value'=>h($income['Income']['id'])))?>
+                                    <?= $this->Form->submit('編集',array('class'=>'btn btn-success btn-xs'))?>
+                                    <?= $this->Form->end()?>
+                                </td>
+                                <td class="center">   
+                                    <?= $this->Form->create('Income',array('action'=>'delete'))?>
+                                    <?= $this->Form->hidden('id',array('value'=>h($income['Income']['id'])))?>
+                                    <?= $this->Form->submit('削除',array('class'=>'btn btn-danger btn-xs'),array('confirm'=>'削除してよろしいでしょうか？'))?>
+                                    <?= $this->Form->end()?>
+                                </td>
+                            </tr>
+                        </tbody>
+                    <? } ?>
                 </table>    
             </div>
         </div>    
