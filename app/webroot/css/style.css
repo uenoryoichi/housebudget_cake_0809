@@ -120,6 +120,11 @@ li {
 	margin-bottom: 0.5em;
 }
 
+.btn ,
+.btn :link,
+.btn :visited{
+    color:#FFF;
+}
 .paging {
 	margin-top: 10px;
 	text-align: center;

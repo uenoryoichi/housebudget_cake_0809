@@ -17,12 +17,26 @@
         </div>
     </div>
 </div>
+<? $titleName = '支払一覧'?>
+<? $data = $incomes?>
+<? $modelName = Inflector::singularize($this->name)?>
+<?= debug($data)?>
+<?= $this->element('shared/money_table', array('titleName' => '支払一覧','modelName' => Inflector::singularize($this->name), 'data' => $incomes))?>
+
+<?
+/**
+ * 支払収入の一覧テーブル
+ * @params string $titleName
+ * @params array  $data        一覧に表示するデータ
+ *
+ */
+?>
 
 <div class="container">
     <div class="row"> 		
         <div class="col-md-offset-1 col-xs-10">
             <div class = "center">
-                <h2>収入情報</h2>
+                <h2><?= $titleName?></h2>
                 <table class="table table-hover table-bordered">
                     <thead>
                         <tr>
@@ -36,25 +50,25 @@
                             <th scope="col"></th>
                         </tr>   
                     </thead>
-                    <? foreach ($incomes as $income) {?>
+                    <? foreach ($data as $value) {?>
 
                         <tbody>
                             <tr>
-                                <td><?= h($income['Income']['title']);?></td>
-                                <td><?= h($income['Income']['date']);?></td>
-                                <td><?= h($income['Income']['amount']);?></td>
-                                <td><?= h($income['IncomeSpecification']['name']);?></td> 
-                                <td><?= h($income['UserAccount']['Account']['name']);?></td>
-                                <td><?= h($income['Income']['memo']);?></td>
+                                <td><?= h($value[$modelName]['title']);?></td>
+                                <td><?= h($value[$modelName]['date']);?></td>
+                                <td><?= h($value[$modelName]['amount']);?></td>
+                                <td><?= h($value[$modelName . 'Specification']['name']);?></td> 
+                                <td><?= h($value['UserAccount']['Account']['name']);?></td>
+                                <td><?= h($value[$modelName]['memo']);?></td>
                                 <td class="center">
-                                    <?= $this->Form->create('Income',array('action'=>'edit'))?>
-                                    <?= $this->Form->hidden('id',array('value'=>h($income['Income']['id'])))?>
+                                    <?= $this->Form->create($modelName,array('action'=>'edit'))?>
+                                    <?= $this->Form->hidden('id',array('value'=>h($value[$modelName]['id'])))?>
                                     <?= $this->Form->submit('編集',array('class'=>'btn btn-success btn-xs'))?>
                                     <?= $this->Form->end()?>
                                 </td>
                                 <td class="center">   
-                                    <?= $this->Form->create('Income',array('action'=>'delete'))?>
-                                    <?= $this->Form->hidden('id',array('value'=>h($income['Income']['id'])))?>
+                                    <?= $this->Form->create($modelName,array('action'=>'delete'))?>
+                                    <?= $this->Form->hidden('id',array('value'=>h($value[$modelName]['id'])))?>
                                     <?= $this->Form->submit('削除',array('class'=>'btn btn-danger btn-xs'),array('confirm'=>'削除してよろしいでしょうか？'))?>
                                     <?= $this->Form->end()?>
                                 </td>
@@ -66,4 +80,6 @@
         </div>    
     </div>
 </div>
+
+
 

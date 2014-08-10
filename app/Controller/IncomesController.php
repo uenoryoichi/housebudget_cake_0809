@@ -53,9 +53,15 @@ class IncomesController extends AppController
         //一覧表示のデータ
         $params = array(
             'limit' =>30,
-            'recursive'=>2
+            'recursive'=>2,
         );
-        $this->set('incomes', $this->Income->find('all',$params));
+        $data = $this->Income->find('all',$params);
+        foreach($data as $key => $value){
+            $income[$key]['Income'] = $value['Income'];
+            $income[$key]['IncomeSpecification']['name'] = $value['IncomeSpecification']['name'];
+            $income[$key]['UserAccount']['Account']['name'] = $value['UserAccount']['Account']['name'];
+        }
+        $this->set('incomes', $income);
         $this->__optionSet();
 
         $this->set('title_for_layout','収入一覧');
@@ -65,16 +71,14 @@ class IncomesController extends AppController
 
     public function edit($id=null)
     {
-        $this->Income->id=$id;
-        if ($this->request->is('post')) {
-            //元の情報
-            $this->set('inputed', $this->Income->find('first', array('conditions'=> array('Income.id'=>$this->request->data['Income']['id']))));
+        $incomeData = $this->Income->findById($id,'user_id');
+        if ($incomeData['Income']['user_id'] === AuthComponent::user('id')) {
+            $this->set('inputed', $this->Income->findById($id));
             $this->__optionSet();
             $this->set('title_for_layout','収入情報修正');
-
-        }else {
+        }else{
             $this->Session->setFlash('failed!');
-            $this->redirect(array('index'));
+            $this->redirect('index');
         }
     }
 
@@ -99,20 +103,18 @@ class IncomesController extends AppController
     
 
 
-    public function delete ()
+    public function delete ($id = null)
     {
-        if ($this->request->is('get')) {
-            throw new MethodNotAllowedException();
-        }
-        if ($this->request->is('post')) {
-            if ($this->Income->delete($this->Income->delete($this->request->data['Income']['id']))) {
+        $incomeData = $this->Income->findById($id,'user_id');
+        if ($incomeData['Income']['user_id'] === AuthComponent::user('id')) {
+            if ($this->Income->delete($id)) {
                 $this->Session->setFlash('Deleted!');
-                $this->redirect('index');
             }else{
-                $this->redirect('index');
+                $this->Session->setFlash('failed!');
             }
-        }else{
             $this->redirect('index');
+        }else{
+            throw new MethodNotAllowedException();
         }
     }
 }

@@ -1,3 +1,4 @@
+<?= debug(phpinfo())?>
 <h2>支出一覧</h2>
 <div class="container">
     <div class="row"> 		    
@@ -17,7 +18,7 @@
         </div>
     </div>
 </div>
-
+<?= debug($this->name);?>
 <div class="container">
     <div class="row"> 		
         <div class="col-md-offset-1 col-xs-10">
