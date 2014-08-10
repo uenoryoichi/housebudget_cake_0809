@@ -102,13 +102,13 @@ class IncomesController extends AppController
             'limit' =>30,
             'recursive'=>2,
         );
-        $data = $this->Income->find('all',$params);
-        foreach($data as $key => $value){
-            $income[$key]['Income'] = $value['Income'];
-            $income[$key]['IncomeSpecification']['name'] = $value['IncomeSpecification']['name'];
-            $income[$key]['UserAccount']['Account']['name'] = $value['UserAccount']['Account']['name'];
+        $allIncome = $this->Income->find('all',$params);
+        foreach($allIncome as $key => $value){
+            $incomes[$key]['Income'] = $value['Income'];
+            $incomes[$key]['IncomeSpecification']['name'] = $value['IncomeSpecification']['name'];
+            $incomes[$key]['UserAccount']['Account']['name'] = $value['UserAccount']['Account']['name'];
         }
-        $this->set('incomes', $income);
+        $this->set('incomes', $incomes);
         $this->__optionSet();
 
         $this->set('title_for_layout','収入一覧');

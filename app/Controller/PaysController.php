@@ -98,7 +98,13 @@ class PaysController extends AppController
             'limit' =>30,
             'recursive'=>2
         );
-        $this->set('pays', $this->Pay->find('all',$params));
+        $allPay = $this->Pay->find('all',$params);
+        foreach($allPay as $key => $value){
+            $pays[$key]['Pay'] = $value['Pay'];
+            $pays[$key]['PaySpecification']['name'] = $value['PaySpecification']['name'];
+            $pays[$key]['UserAccount']['Account']['name'] = $value['UserAccount']['Account']['name'];
+        }
+        $this->set('pays', $pays);
         $this->__optionSet();
 
         $this->set('title_for_layout','支出一覧');
