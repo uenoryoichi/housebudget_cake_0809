@@ -14,7 +14,6 @@ class PaysController extends AppController
     }
 
 
-
     public function add()
     {
         if($this->request->is('post')){
@@ -33,41 +32,11 @@ class PaysController extends AppController
     }
 
 
-
-/*
- *入力フォームの選択肢を取得
- */
-    private function __optionSet()
-    {        
-        //分類の選択肢
-        $this->set('pay_specification_option',$this->PaySpecification->select_option('pay_specification_option'));
-
-        //口座の選択肢
-        $this->set('user_account_option',$this->UserAccount->select_option('user_account_option'));		
-    }
-
-
-
-    private function __setData() 
-    {
-        //一覧表示のデータ
-        $params = array(
-            'limit' =>30,
-            'recursive'=>2
-        );
-        $this->set('pays', $this->Pay->find('all',$params));
-        $this->__optionSet();
-
-        $this->set('title_for_layout','支出一覧');
-    }
-
-
-
     public function edit($id=null)
     {
         $payData = $this->Pay->findById($id,'user_id');
         if ($payData['Pay']['user_id'] === AuthComponent::user('id')) {
-            $this->set('inputed', $this->Pay->findById($id));
+            $this->data = $this->Pay->findById($id,'Pay.*');
             $this->__optionSet();
             $this->set('title_for_layout','収入情報修正');
         }else{
@@ -103,9 +72,36 @@ class PaysController extends AppController
             }else{
                 $this->Session->setFlash('failed!');
             }
-            $this->redirect('index');
-        }else{
-            throw new MethodNotAllowedException();
         }
+        $this->redirect('index');
     }
+
+
+/*
+ *入力フォームの選択肢を取得
+ */
+    private function __optionSet()
+    {        
+        //分類の選択肢
+        $this->set('pay_specification_option',$this->PaySpecification->select_option('pay_specification_option'));
+
+        //口座の選択肢
+        $this->set('user_account_option',$this->UserAccount->select_option('user_account_option'));		
+    }
+
+
+
+    private function __setData() 
+    {
+        //一覧表示のデータ
+        $params = array(
+            'limit' =>30,
+            'recursive'=>2
+        );
+        $this->set('pays', $this->Pay->find('all',$params));
+        $this->__optionSet();
+
+        $this->set('title_for_layout','支出一覧');
+    }
+
 }
