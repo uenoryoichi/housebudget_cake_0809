@@ -16,10 +16,9 @@ class UsersController extends AppController
 
     public function index()
     {
-        //todo 支出収入が無いときに文字化けしないような処理
         $this->set('title_for_layout','home');
-        $this->set('income_this_month',$this->Income->incomeThisMonth('income_this_month')[0]);
-        $this->set('pay_this_month',$this->Pay->payThisMonth('pay_this_month')[0]);
+        $this->set('income_this_month', $this->Income->incomeThisMonth());
+        $this->set('pay_this_month', $this->Pay->payThisMonth());
     
         $params = array('conditions' => array('UserAccount.user_id' => AuthComponent::user('id')));
         $this->set('user_accounts', $this->UserAccount->find('all', $params)); 

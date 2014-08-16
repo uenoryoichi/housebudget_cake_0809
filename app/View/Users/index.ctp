@@ -4,7 +4,7 @@
         <div class="col-md-offset-3 col-xs-6 well well-lg" >
             <div class="text-center">
                 <h2>今月の収支</h2>
-                <p>   出費：<?php echo h($pay_this_month['sum(`Pay`.`amount`)']);?>円  収入：<?php echo h($income_this_month['sum(`Income`.`amount`)']);?>円</p>
+                <p>   出費：<?php echo h($pay_this_month);?>円  収入：<?php echo h($income_this_month);?>円</p>
             </div>
         </div>
     </div>

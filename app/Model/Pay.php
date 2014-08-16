@@ -37,23 +37,24 @@ class Pay extends AppModel
         )
     );
 
-    public function payThisMonth($pay_this_month)
+    public function payThisMonth()
     {
-        $pay_this_month = NULL;
-        $year = date('Y');
-        $month = date('m');
+        $nextMonth = new DateTime("now");
+        $nextMonth->modify('+ 1 month'); 
 
         $params = array(
             'conditions'=>array(
                 'Pay.user_id' => AuthComponent::user('id'),
-                "YEAR(Pay.date) = $year",
-                "MONTH(Pay.date) = $month"
+                "Pay.date >= " => date('Y-m'),
+                "Pay.date < " => $nextMonth->format('Y-m'),
             ),
-            'fields' => array('sum(Pay.amount)'),
-            'group' => array('Pay.user_id')
+            'fields' => array('Pay.amount'),
         ); 
-        $pay_this_month = $this->find('first', $params);
-        
-        return $pay_this_month;
+
+        $totalPayInThisMonth = 0;
+        foreach($this->find('list', $params) as $key => $value){
+            $totalPayInThisMonth += $value;
+        }
+        return $totalPayInThisMonth;
     }    
 }
