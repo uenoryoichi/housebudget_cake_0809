@@ -4,7 +4,7 @@
         <div class="col-md-offset-3 col-xs-6 well well-lg" >
             <div class="text-center">
                 <h2>今月の収支</h2>
-                <p>   出費：<?php echo h($pay_this_month);?>円  収入：<?php echo h($income_this_month);?>円</p>
+                <p>   出費：<?= h($pay_this_month)?>円  収入：<?= h($income_this_month)?>円</p>
             </div>
         </div>
     </div>
@@ -23,14 +23,14 @@
                             <th scope="col">金額</th>
                         </tr>
                     </thead>
-                    <?php foreach ($user_accounts as $user_account): ?>
+                    <? foreach ($user_accounts as $user_account) { ?>
                     <tbody>
                         <tr>
-                            <td><?php echo(h($user_account['Account']['name']));?></td>
-                            <td><?php echo(h($user_account['UserAccount']['balance']));?></td>
+                            <td><?= h($user_account['Account']['name']);?></td>
+                            <td><?= h($user_account['UserAccount']['balance']);?></td>
                         </tr>
                     </tbody>
-                    <?php endforeach?>
+                    <? } ?>
                 </table>
             </div>
         </div>
