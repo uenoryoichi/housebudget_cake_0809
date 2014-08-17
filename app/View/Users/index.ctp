@@ -27,7 +27,7 @@
                     <tbody>
                         <tr>
                             <td><?= h($user_account['Account']['name']);?></td>
-                            <td><?= h($user_account['UserAccount']['balance']);?></td>
+                            <td><?= h($user_account['UserAccount']['nowBalance']);?></td>
                         </tr>
                     </tbody>
                     <? } ?>
