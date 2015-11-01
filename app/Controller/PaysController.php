@@ -14,7 +14,6 @@ class PaysController extends AppController
     }
 
 
-
     public function add()
     {
         if($this->request->is('post')){
@@ -32,6 +31,50 @@ class PaysController extends AppController
         }
     }
 
+
+    public function edit($id=null)
+    {
+        $payData = $this->Pay->findById($id,'user_id');
+        if ($payData['Pay']['user_id'] === AuthComponent::user('id')) {
+            $this->data = $this->Pay->findById($id,'Pay.*');
+            $this->__optionSet();
+            $this->set('title_for_layout','収入情報修正');
+        }else{
+            $this->Session->setFlash('failed!');
+            $this->redirect('index');
+        }
+        
+    }
+
+    public function edit_action($id=null)
+    {
+        $this->Pay->id=$id;
+        if ($this->request->is('post')) {
+            if ($this->Pay->save($this->request->data)) {
+                $this->Session->setFlash('success!');
+                $this->redirect('index');
+            }else {
+                $this->Session->setFlash('failed!');
+                $this->render('edit');
+            }
+        }else {
+            $this->Session->setFlash('failed!');
+            $this->redirect('index');
+        }
+    }
+    
+    public function delete ($id = null)
+    {
+        $payData = $this->Pay->findById($id,'user_id');
+        if ($payData['Pay']['user_id'] === AuthComponent::user('id')) {
+            if ($this->Pay->delete($id)) {
+                $this->Session->setFlash('Deleted!');
+            }else{
+                $this->Session->setFlash('failed!');
+            }
+        }
+        $this->redirect('index');
+    }
 
 
 /*
@@ -55,68 +98,16 @@ class PaysController extends AppController
             'limit' =>30,
             'recursive'=>2
         );
-        $this->set('pays', $this->Pay->find('all',$params));
+        $allPay = $this->Pay->find('all',$params);
+        foreach($allPay as $key => $value){
+            $pays[$key]['Pay'] = $value['Pay'];
+            $pays[$key]['PaySpecification']['name'] = $value['PaySpecification']['name'];
+            $pays[$key]['UserAccount']['Account']['name'] = $value['UserAccount']['Account']['name'];
+        }
+        $this->set('pays', $pays);
         $this->__optionSet();
 
         $this->set('title_for_layout','支出一覧');
     }
 
-
-
-    public function edit($id=null)
-    {
-        $this->Pay->id=$id;
-        if ($this->request->is('post')) {
-            //元の情報
-            $this->set('inputed', $this->Pay->find('first', array(
-                'conditions' => array(
-                    'Pay.id' => $this->request->data['Pay']['id']
-                )
-            )));
-            $this->__optionSet();
-            $this->set('title_for_layout','支出情報修正');
-
-        }else {
-            $this->Session->setFlash('failed!');
-            $this->redirect(array('index'));
-        }
-    }
-
-
-
-    public function edit_action($id=null)
-    {
-        $this->Pay->id=$id;
-        if ($this->request->is('post')) {
-            if ($this->Pay->save($this->request->data)) {
-                $this->Session->setFlash('success!');
-                $this->redirect('index');
-            }else {
-                $this->Session->setFlash('failed!');
-                $this->render('edit');
-            }
-        }else {
-            $this->Session->setFlash('failed!');
-            $this->redirect('index');
-        }
-    }
-    
-
-
-    public function delete ()
-    {
-        if ($this->request->is('get')) {
-            throw new MethodNotAllowedException();
-        }
-        if ($this->request->is('post')) {
-            if ($this->Pay->delete($this->request->data['Pay']['id'])) {
-                $this->Session->setFlash('Deleted!');
-                $this->redirect('index');
-            }else{
-                $this->redirect('index');
-            }
-        }else{
-            $this->redirect('index');
-        }
-    }
 }

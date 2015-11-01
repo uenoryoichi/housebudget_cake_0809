@@ -68,7 +68,6 @@ class UserAccount extends AppModel
  */
     public function user_account_not_use ($user_account_not_use = array())
     {
-        $user_account_not_use = array();
         $user_account_use = $this->user_account_use('user_account_use');    
         $user_account_use_id = array();
         for ($i= 0, $count_u_a_u=count($user_account_use);  $i < $count_u_a_u; $i++){
@@ -88,6 +87,28 @@ class UserAccount extends AppModel
         );
         $user_account_not_use=$this->Account->find('all', $params);
         return $user_account_not_use;
+    }
+
+    function getBalance ($userId) {
+        $params = array('conditions' => array('UserAccount.user_id' => $userId));
+        $userAccounts = $this->find('all',$params);
+        foreach($userAccounts as $key => $userAccount) {
+            $nowBalance = $userAccount['UserAccount']['balance'];
+            $nowBalance += $this->__getBalanceDifffterChecked($userAccount['Income'], $userAccount['UserAccount']['checked']);
+            $nowBalance += $this->__getBalanceDifffterChecked($userAccount['TransferRemittee'], $userAccount['UserAccount']['checked']);
+            $nowBalance -= $this->__getBalanceDifffterChecked($userAccount['Pay'], $userAccount['UserAccount']['checked']);
+            $nowBalance -= $this->__getBalanceDifffterChecked($userAccount['TransferRemitter'], $userAccount['UserAccount']['checked']);
+            $userAccounts[$key]['UserAccount']['nowBalance'] = $nowBalance;
+        }
+        return $userAccounts;
+    }
+
+    function __getBalanceDifffterChecked($targets, $checked) {
+        $balanceDiff = 0;
+        foreach($targets as $target){
+            if($target['date'] > $checked) $balanceDiff += $target['amount'];
+        }
+        return $balanceDiff;
     }
 }
 

@@ -50,26 +50,28 @@ class TransfersController extends AppController
         //一覧表示のデータ
         $params = array(
             'limit' =>30,
-            'recursive'=>2
+            'recursive'=>2,
         );
-        $this->set('transfers', $this->Transfer->find('all',$params));
+        $allTransfer = $this->Transfer->find('all',$params);
+        foreach($allTransfer as $key => $value){
+            $transfers[$key]['Transfer'] = $value['Transfer'];
+            $transfers[$key]['UserAccountRemitter']['Account']['name'] = $value['UserAccountRemitter']['Account']['name'];
+            $transfers[$key]['UserAccountRemittee']['Account']['name'] = $value['UserAccountRemittee']['Account']['name'];
+        }
+        $this->set('transfers', $transfers);
         $this->__optionSet();
 
-        $this->set('title_for_layout','資金移動一覧');
+        $this->set('title_for_layout','収入一覧');
     }
 
 
 
     public function edit($id=null)
     {
-        $this->Transfer->id=$id;
-        if ($this->request->is('post')) {
+        $transferData = $this->Transfer->findById($id,'user_id');
+        if ($transferData['Transfer']['user_id'] === AuthComponent::user('id')) {
             //元の情報
-            $this->set('inputed', $this->Transfer->find('first', array(
-                'conditions' => array(
-                    'Transfer.id' => $this->request->data['Transfer']['id']
-                )
-            )));
+            $this->data = $this->Transfer->findById($id, 'Transfer.*');
             $this->__optionSet();
             $this->set('title_for_layout','資金移動情報修正');
 

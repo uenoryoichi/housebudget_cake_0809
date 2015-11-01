@@ -38,23 +38,23 @@ class Income extends AppModel
         )
     );
 
-    public function incomeThisMonth($income_this_month)
+    public function incomeThisMonth()
     {
-        $income_this_month = NULL;
-        $year = date('Y');
-        $month = date('m');
-
+        $nextMonth = new DateTime("now");
+        $nextMonth->modify('+ 1 month'); 
         $params = array(
             'conditions'=>array(
                 'Income.user_id' => AuthComponent::user('id'),
-                "YEAR(Income.date) = $year",
-                "MONTH(Income.date) = $month"
+                "Income.date >= " => date('Y-m'),
+                "Income.date < " => $nextMonth->format('Y-m'),
             ),
-            'fields' => array('sum(Income.amount)'),
-            'group' => array('Income.user_id')
+            'fields' => array('Income.amount'),
         ); 
-        $income_this_month = $this->find('first', $params);
-        
-        return $income_this_month;
+
+        $totalIncomeInThisMonth = 0;
+        foreach($this->find('list', $params) as $key => $value){
+            $totalIncomeInThisMonth += $value;
+        }
+        return $totalIncomeInThisMonth;
     }    
 }

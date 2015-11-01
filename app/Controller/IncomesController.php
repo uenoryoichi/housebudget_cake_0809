@@ -28,53 +28,21 @@ class IncomesController extends AppController
             }
         }else{
             $this->Session->setFlash('Fauled');
-            $this->redirect(array('index'));
+            $this->redirect('index');
         }
     }
 
 
-
-/*
- *入力フォームの選択肢を取得
- */
-    private function __optionSet()
-    {        
-        //分類の選択肢
-        $this->set('income_specification_option',$this->IncomeSpecification->select_option('income_specification_option'));
-
-        //口座の選択肢
-        $this->set('user_account_option',$this->UserAccount->select_option('user_account_option'));		
-    }
-
-
-
-    private function __setData() 
-    {
-        //一覧表示のデータ
-        $params = array(
-            'limit' =>30,
-            'recursive'=>2
-        );
-        $this->set('incomes', $this->Income->find('all',$params));
-        $this->__optionSet();
-
-        $this->set('title_for_layout','収入一覧');
-    }
-
-
-
     public function edit($id=null)
     {
-        $this->Income->id=$id;
-        if ($this->request->is('post')) {
-            //元の情報
-            $this->set('inputed', $this->Income->find('first', array('conditions'=> array('Income.id'=>$this->request->data['Income']['id']))));
+        $incomeData = $this->Income->findById($id,'user_id');
+        if ($incomeData['Income']['user_id'] === AuthComponent::user('id')) {
+            $this->data = $this->Income->findById($id,'Income.*');
             $this->__optionSet();
             $this->set('title_for_layout','収入情報修正');
-
-        }else {
+        }else{
             $this->Session->setFlash('failed!');
-            $this->redirect(array('index'));
+            $this->redirect('index');
         }
     }
 
@@ -99,20 +67,52 @@ class IncomesController extends AppController
     
 
 
-    public function delete ()
+    public function delete ($id = null)
     {
-        if ($this->request->is('get')) {
-            throw new MethodNotAllowedException();
-        }
-        if ($this->request->is('post')) {
-            if ($this->Income->delete($this->Income->delete($this->request->data['Income']['id']))) {
+        $incomeData = $this->Income->findById($id,'user_id');
+        if ($incomeData['Income']['user_id'] === AuthComponent::user('id')) {
+            if ($this->Income->delete($id)) {
                 $this->Session->setFlash('Deleted!');
-                $this->redirect('index');
             }else{
-                $this->redirect('index');
+                $this->Session->setFlash('failed!');
             }
-        }else{
-            $this->redirect('index');
         }
+        $this->redirect('index');
     }
+
+
+/*
+ *入力フォームの選択肢を取得
+ */
+    private function __optionSet()
+    {        
+        //分類の選択肢
+        $this->set('income_specification_option',$this->IncomeSpecification->select_option('income_specification_option'));
+
+        //口座の選択肢
+        $this->set('user_account_option',$this->UserAccount->select_option('user_account_option'));		
+    }
+
+
+
+    private function __setData() 
+    {
+        //一覧表示のデータ
+        $params = array(
+            'limit' =>30,
+            'recursive'=>2,
+        );
+        $allIncome = $this->Income->find('all',$params);
+        foreach($allIncome as $key => $value){
+            $incomes[$key]['Income'] = $value['Income'];
+            $incomes[$key]['IncomeSpecification']['name'] = $value['IncomeSpecification']['name'];
+            $incomes[$key]['UserAccount']['Account']['name'] = $value['UserAccount']['Account']['name'];
+        }
+        $this->set('incomes', $incomes);
+        $this->__optionSet();
+
+        $this->set('title_for_layout','収入一覧');
+    }
+
+
 }

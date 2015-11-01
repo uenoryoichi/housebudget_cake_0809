@@ -1,24 +1,5 @@
-<h2>収入一覧</h2>
-<div class="container">
-    <div class="row"> 		    
-        <div class="col-md-offset-3 col-md-6">
-            <br><h2>収入情報入力フォーム</h2>
-            <?php  
-            echo $this->Form->create('Transfer',array('action'=>'add','class'=>'form-inline well'));
-            echo $this->Form->input('title',array('label'=>'名称'));
-            echo $this->Form->input('amount',array('label'=>'金額'));
-            echo $this->Form->input('date',array('class'=>'form-control-dateTime','label'=>'日時'));
-            echo $this->Form->input('memo',array('label'=>'メモ'));
-            echo $this->Form->input('user_account_remitter_id',array('label'=>'送金元','options' => $user_account_option));
-            echo $this->Form->input('user_account_remittee_id',array('label'=>'送金先','options' => $user_account_option));
-            echo $this->Form->hidden('user_id',array('value' => AuthComponent::user('id')));
-            ?>
-            <div class='center'>
-            <?php echo $this->Form->end('Save Transfer'); ?>
-            </div>  
-        </div>
-    </div>
-</div>
+<?// 入力フォーム?>
+<?= $this->element('shared/transfer_input_form', array('user_account_option' => $user_account_option))?>
 
 <div class="container">
     <div class="row"> 		
@@ -38,7 +19,7 @@
                             <th scope="col"></th>
                         </tr>   
                     </thead>
-                    <?php foreach ($transfers as $transfer):?>
+                    <?php foreach ($transfers as $transfer) {?>
 
                     <tbody>
                         <tr>
@@ -49,28 +30,18 @@
                             <td><?php echo h($transfer['UserAccountRemittee']['Account']['name']);?></td>
                             <td><?php echo h($transfer['Transfer']['memo']);?></td>
                             <td class="center">
-                            <?php  
-                                echo $this->Form->create('Transfer',array('action'=>'edit'));
-                                echo $this->Form->hidden('id',array('value'=>$transfer['Transfer']['id']));
-                                echo $this->Form->submit('編集',array('class'=>'btn btn-success btn-xs'));
-                                echo $this->Form->end();
-                            ?>
+                                <div class="btn btn-xs btn-success">
+                                    <?= $this->Html->link(__('編集'), '/' . $this->name . '/edit/' . $transfer['Transfer']['id'])?>
+                                </div>
                             </td>
                             <td class="center">   
-                            <?php 
-                                echo $this->Form->create('Transfer',array('action'=>'delete'));
-                                echo $this->Form->hidden('id',array('value'=>$transfer['Transfer']['id']));
-                                echo $this->Form->submit(
-                                    '削除',
-                                    array('class'=>'btn btn-danger btn-xs'),
-                                    array('confirm'=>'削除してよろしいでしょうか？')
-                                );
-                                echo $this->Form->end();
-                            ?>
+                                <div class="btn btn-xs btn-danger">
+                                <?= $this->Html->link(__('削除'), '/' . $this->name . '/delete/' . $transfer['Transfer']['id'])?>
+                                </div>
                             </td>
                         </tr>
                     </tbody>
-                    <?php endforeach;?>
+                    <? } ?>
                 </table>    
             </div>
         </div>    
